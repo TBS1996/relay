@@ -1092,7 +1092,8 @@ impl Message for KafkaMessage {
             Self::Profile(_message) => Uuid::nil(),
             Self::ReplayEvent(message) => message.replay_id.0,
             Self::ReplayRecordingNotChunked(_message) => Uuid::nil(), // Ensure random partitioning.
-            Self::CheckIn(_message) => Uuid::nil(),
+            // Group associated check-ins into the same partition for better ordering.
+            Self::CheckIn(message) => message.check_in_id.0,
             Self::Span(_) => Uuid::nil(), // random partitioning
         };
 
